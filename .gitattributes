@@ -1,1 +1,1 @@
-scripts/info.sh text eol=lf
+scripts\deinfo.sh text eol=lf
