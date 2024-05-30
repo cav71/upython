@@ -1,0 +1,19 @@
+FROM opensuse/leap
+ARG TARGETOS TARGETARCH
+
+
+RUN zypper install -y \
+    file gzip vim tree tar bzip2 make \
+	git curl \
+    gcc gcc-c++ \
+    glibc-devel glibc-devel glibc-devel-static libc++-devel \
+    llvm-devel \
+	python311 python311-pip python311-devel \
+	libffi-devel 
+
+RUN zypper update -y
+
+RUN mkdir -p /sdk /usr/src/sdk
+COPY scripts/info.sh /usr/bin/
+CMD [ "/usr/bin/info.sh", ]
+
