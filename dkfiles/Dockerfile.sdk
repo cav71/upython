@@ -3,9 +3,9 @@ ARG TARGETOS TARGETARCH
 
 
 RUN zypper install -y \
-    file gzip vim tree tar bzip2 make \
+    file gzip vim tree tar bzip2 make cmake \
 	git curl \
-    gcc gcc-c++ \
+    gcc12 gcc12-c++ \
     glibc-devel glibc-devel glibc-devel-static libc++-devel \
     llvm-devel \
 	python311 python311-pip python311-devel \

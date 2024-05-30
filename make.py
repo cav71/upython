@@ -20,12 +20,28 @@ def run(cmd):
     return subprocess.check_call(args, encoding="utf-8")
 
 
+def dkrun(platform, image, *cmds, mountpoints=True):
+    result = [ f"docker run --platform {platform}", ]
+
+    if mountpoints is True:
+        mountpoints = [
+            f"{BASEDIR}/scripts:/scripts",
+            f"{BUILDIR}:/build",
+        ]
+
+    for mountpoint in  (mountpoints or []):
+        result.append(f"-v {mountpoint}")
+    result.append(f"--rm -ti {image}")
+    result.extend(cmds)
+    return " ".join(result)
+
 @api.task(name="build-sdk")
 def build_sdk(arguments: list[str]):
     cache = BUILDDIR / "cache"  # noqa: ignore
     cache.mkdir(parents=True, exist_ok=True)
     sysroot = BUILDDIR / "sysroot"  # noqa: ignore
     sysroot.mkdir(parents=True, exist_ok=True)
+    (sysroot / "src").mkdir(parents=True, exist_ok=True)
 
     if not (path := (cache / "sdk.touch" )).exists():
         run(["docker", "buildx", "build", "--platform", ",".join(PLATFORMS), "--push",
@@ -35,7 +51,7 @@ def build_sdk(arguments: list[str]):
     if sys.platform == "win32":
         print(f"""👉 run: 
 
-docker run --platform linux/amd64 ^
+docker run --platform linux/arm/v7 ^
   -v {BUILDDIR / 'sysroot' }:/build ^
   -v {Path.cwd() / 'scripts'}:/build/scripts ^
   -ti --rm cavallo71/upython-sdk bash
