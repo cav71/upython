@@ -3,15 +3,18 @@ ARG TARGETOS TARGETARCH
 
 
 RUN zypper install -y \
-    file gzip vim tree tar bzip2 make cmake \
-	git curl \
+    file gzip vim tree tar bzip2 make cmake git curl \
     gcc12 gcc12-c++ \
     glibc-devel glibc-devel glibc-devel-static libc++-devel \
     llvm-devel \
 	python311 python311-pip python311-devel \
-	libffi-devel 
+	libffi-devel \
+    postgresql15-server-devel postgresql15-devel
 
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 1
+RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 1
 RUN zypper update -y
+
 
 RUN mkdir -p /sdk /usr/src/sdk
 COPY scripts/info.sh /usr/bin/
